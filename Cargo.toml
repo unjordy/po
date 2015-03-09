@@ -1,0 +1,16 @@
+[package]
+
+name = "po"
+version = "0.0.1"
+authors = ["Jordan Mulcahey <snhjordy@gmail.com>"]
+description = ""
+keywords = ["Pushover", "push", "notification", "notifications", "messaging"]
+readme = "README.md"
+license = "BSD-2-Clause"
+
+[dependencies]
+url = "0.2.23"
+curl = "0.2.1"
+docopt = "0.6.45"
+rustc-serialize = "0.3.1"
+regex = "0.1.18"
