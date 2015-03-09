@@ -33,7 +33,7 @@ Add `po = "*"` to the `[dependencies]` section of your project's Cargo.toml. Use
 ## Todo
 * More complete error handling
 * Verify the stored API token and user key
+* Retry sending the notification if a transient error is encountered
 * Markdown output support for Gists
 * Asynchronous sending for `po` via daemonization
 * More testing
-
