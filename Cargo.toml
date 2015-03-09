@@ -3,9 +3,11 @@
 name = "po"
 version = "0.0.1"
 authors = ["Jordan Mulcahey <snhjordy@gmail.com>"]
-description = ""
+description = "A Rust API and command-line notification pusher for the Pushover notification service"
 keywords = ["Pushover", "push", "notification", "notifications", "messaging"]
 readme = "README.md"
+homepage = "https://github.com/unjordy/po"
+repository = "https://github.com/unjordy/po"
 license = "BSD-2-Clause"
 
 [dependencies]
