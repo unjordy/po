@@ -10,6 +10,7 @@ extern crate docopt;
 use docopt::Docopt;
 use std::io::prelude::*;
 use std::path::Path;
+use po::Parameters;
 
 static USAGE: &'static str = "
 Usage: po [options]
@@ -50,35 +51,27 @@ struct Args {
     flag_always_gist: bool
 }
 
-fn optional_arg<'a>(arg:  &'a Option<String>) -> Option<&'a str> {
-    match *arg {
-        Some(ref s) => Some(s.as_slice()),
-        None => None
-    }
-}
+// Consume our arguments struct and produce a vector of Parameters for our
+// po send function
+fn parse_parameters(args: Args) -> Vec<Parameters> {
+    let mut parameters: Vec<Parameters> = Vec::new();
 
-fn send(token: &str, user: &str, message: &str, priority: i8,
-        title: Option<&str>, device: Option<&str>, sound: Option<&str>,
-        gist: bool) {
-    if gist {
-        match po::send_gist(token, user, message, priority, title,
-                            device, sound) {
-            Ok(()) => {},
-            Err(errors) => {
-                println!("po: {:?}", errors);
-                std::env::set_exit_status(1)
-            }
-        }
+    if args.flag_p != 0 {
+        parameters.push(Parameters::Priority(args.flag_p));
     }
-    else {
-        match po::send(token, user, message, priority, title, device, sound) {
-            Ok(()) => {},
-            Err(errors) => {
-                println!("po: {:?}", errors);
-                std::env::set_exit_status(1)
-            }
-        }
+    if let Some(title) = args.flag_title {
+        parameters.push(Parameters::Title(title));
     }
+    if let Some(device) = args.flag_device {
+        parameters.push(Parameters::Device(device));
+    }
+    if let Some(sound) = args.flag_sound {
+        parameters.push(Parameters::Sound(sound));
+    }
+    if args.flag_always_gist {
+        parameters.push(Parameters::Gist);
+    }
+    parameters
 }
 
 fn setup(config: &Path, token: &str, user: &str) {
@@ -143,19 +136,24 @@ at https://pushover.net to get your user key. Finally, run the command:
         println!("po: Config read error: {:?}", e);
         std::env::set_exit_status(1);
     }
-    else if let Some(message) = args.arg_message {
+    else if let Some(message) = args.arg_message.clone() {
         let (token, user) = config.unwrap();
-        let gist = (args.flag_gist && message.len() > 1024) ||
-            args.flag_always_gist;
+        let arg_gist = args.flag_gist;
+        let mut parameters = parse_parameters(args);
+        if arg_gist && message.len() > 1024 {
+            parameters.push(Parameters::Gist);
+        }
 
-        send(token.as_slice(),
-             user.as_slice(),
-             message.as_slice(),
-             args.flag_p,
-             optional_arg(&args.flag_title),
-             optional_arg(&args.flag_device),
-             optional_arg(&args.flag_sound),
-             gist);
+        match po::push(token.as_slice(),
+                       user.as_slice(),
+                       message.as_slice(),
+                       parameters.as_slice()) {
+            Ok(()) => {},
+            Err(errors) => {
+                println!("po: {:?}", errors);
+                std::env::set_exit_status(1);
+            }
+        }
     }
     else {
         let (token, user) = config.unwrap();
@@ -163,16 +161,21 @@ at https://pushover.net to get your user key. Finally, run the command:
         let mut message = String::new();
 
         input.read_to_string(&mut message).unwrap();
-        let gist = (args.flag_gist && message.len() > 1024) ||
-            args.flag_always_gist;
+        let arg_gist = args.flag_gist;
+        let mut parameters = parse_parameters(args);
+        if arg_gist && message.len() > 1024 {
+            parameters.push(Parameters::Gist);
+        }
 
-        send(token.as_slice(),
-             user.as_slice(),
-             message.as_slice(),
-             args.flag_p,
-             optional_arg(&args.flag_title),
-             optional_arg(&args.flag_device),
-             optional_arg(&args.flag_sound),
-             gist);
+        match po::push(token.as_slice(),
+                       user.as_slice(),
+                       message.as_slice(),
+                       parameters.as_slice()) {
+            Ok(()) => {},
+            Err(errors) => {
+                println!("po: {:?}", errors);
+                std::env::set_exit_status(1);
+            }
+        }
     }
 }
