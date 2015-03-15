@@ -9,7 +9,7 @@ libpo, the Rust API, safely wraps the Pushover REST API and tries to handle all 
 
 ## Compiling
 You will need libcurl; everything else is pulled in by Cargo.
-Run `cargo build` to compile both the libpo library and the `po` command-line pusher; they will each be in the `target` subdirectory. Run `cargo build --release` to compile optimized builds of each, which end up in `target/release`. If you want, copy `po` to someplace in your path.
+Run `cargo build` to compile both the libpo library and the `po` command-line pusher; they will each be in the `target/debug` subdirectory. Run `cargo build --release` to compile optimized builds of each, which end up in `target/release`. If you want, copy `po` to someplace in your path.
 
 ## Using `po`
 First, run `po --setup` to receive instructions on how to store a Pushover API token and user key for use by the command-line client.
