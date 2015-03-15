@@ -28,10 +28,17 @@ To push the output of `ls -la` and link the full output as a Gist if it exceeds 
 
 ## Using libpo
 
-Add `po = "*"` to the `[dependencies]` section of your project's Cargo.toml. Use the `po::send` function to push a message, `po::send_gist` to upload the message body to Gist and push it and the link to the Gist, and `po::send_with_url` to push a message with a custom supplementary URL and URL title.
+Add `po = "*"` to the `[dependencies]` section of your project's Cargo.toml.
+
+Use `po::send_basic` to send a basic message with API token, user key, and message body strings. `po::send` supports more complicated messages with optional parameters, and `po::send_gist` posts the full text of each message to GitHub Gist and links it as a supplementary URL (useful if messages exceed the maximum Pushover length).
+
+For a more flexible (and simpler if you have many parameters) API, use `po::push`. This function accepts strings representing an API token, user key, and message body string just like the `po::send_*` family of functions, but accepts as its last parameter an array of `po::Parameters` types representing every optional parameter supported by the library.
+
+libpo also exposes a `po::gist` function which uploads a string to GitHub Gist with an optional title.
 
 ## Todo
 * More complete error handling
+* Make emergency priority messaging actually work
 * Verify the stored API token and user key
 * Retry sending the notification if a transient error is encountered
 * Markdown output support for Gists

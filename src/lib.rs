@@ -14,6 +14,7 @@ use self::Parameters::*;
 
 pub mod config;
 
+/// Optional parameters for Pushover API messages
 #[derive(PartialEq, Clone)]
 pub enum Parameters {
     Priority(i8),
@@ -78,7 +79,8 @@ pub fn gist(message: &str, title: String) -> Result<String, (u32, String)> {
 
     Err((0, format!("Generic: Couldn't post to Gist.")))
 }
-
+/// Pushes a message using the Pushover API, with the specified API token,
+/// user key, message body, and array of optional Parameters.
 pub fn push(token: &str, user: &str, message: &str,
                        parameters: &[Parameters]) -> Result<(), Vec<String>> {
     // Keep these here for now to satisfy the borrow checker:

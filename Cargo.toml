@@ -10,6 +10,10 @@ homepage = "https://github.com/unjordy/po"
 repository = "https://github.com/unjordy/po"
 license = "BSD-2-Clause"
 
+[[bin]]
+name = "po"
+doc = false
+
 [dependencies]
 url = "0.2.23"
 curl = "0.2.2"
