@@ -39,7 +39,7 @@ pub fn read(path: &path::Path) -> Result<(String, String), ReadError> {
         Ok(mut f) => {
             let mut buf = String::new();
             match f.read_to_string(&mut buf) {
-                Ok(()) => {
+                Ok(_) => {
                     let config: Config = json::decode(&buf).unwrap();
                     Ok((config.token, config.user))
                 },

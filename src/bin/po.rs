@@ -1,6 +1,5 @@
 #![feature(core)]
 #![feature(io)]
-#![feature(path)]
 #![feature(path_ext)]
 #![feature(exit_status)]
 
@@ -94,7 +93,7 @@ fn setup(config: &Path, token: &str, user: &str) {
             std::env::set_exit_status(2)
         },
         Err(po::config::WriteError::FileError(e)) => {
-            println!("Config write error: {}", e.detail().unwrap());
+            println!("Config write error: {}", e.to_string());
             std::env::set_exit_status(1)
         }
     }
