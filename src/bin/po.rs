@@ -35,6 +35,7 @@ Options:
                                     Gist and link it in the notification.
     --always-gist                   Always upload the message to GitHub Gist
                                     and link it in the notification.
+    --debug                         Print debugging information.
 ";
 
 #[derive(RustcDecodable, Debug)]
@@ -48,7 +49,8 @@ struct Args {
     flag_sound: Option<String>,
     flag_setup: bool,
     flag_gist: bool,
-    flag_always_gist: bool
+    flag_always_gist: bool,
+    flag_debug: bool
 }
 
 // Consume our arguments struct and produce a vector of Parameters for our
@@ -70,6 +72,9 @@ fn parse_parameters(args: Args) -> Vec<Parameters> {
     }
     if args.flag_always_gist {
         parameters.push(Parameters::Gist);
+    }
+    if args.flag_debug {
+        parameters.push(Parameters::Debug);
     }
     parameters
 }
