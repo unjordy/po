@@ -190,3 +190,8 @@ pub fn send_gist(token: &str, user: &str, message: &str, priority: i8,
     parameters.push(Parameters::Gist);
     push(token, user, message, parameters.as_slice())
 }
+
+pub fn send_basic(token: &str, user: &str,
+                  message: &str) -> Result<(), Vec<String>> {
+    return push(token, user, message, vec![].as_slice());
+}
