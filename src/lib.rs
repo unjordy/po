@@ -17,13 +17,24 @@ pub mod config;
 /// Optional parameters for Pushover API messages
 #[derive(PartialEq, Clone)]
 pub enum Parameters {
+    /// A numeric priority from -2 (lowest priority) to 2 (emergency priority)
+    /// (Default: 0)
     Priority(i8),
+    /// A title for the push notification
     Title(String),
+    /// A string identifying the device to send the notification to
     Device(String),
+    /// The notification sound to play (out of the Pushover-supported sounds)
     Sound(String),
+    /// A supplementary URL to send with the notification
     URL(String),
+    /// A title to give the supplementary URL
     URLTitle(String),
+    /// Gist the full message body and link it as a supplementary URL with
+    /// title "Full Output (GitHub Gist)". This option supersedes the URL and
+    /// URLTitle options if those are also provided.
     Gist,
+    /// Enable debugging output
     Debug
 }
 
@@ -53,6 +64,8 @@ fn api_error(response_body: &str) -> Result<(), Vec<String>> {
     Err(vec![format!("general API error")])
 }
 
+/// Post a message body with a given title to GitHub Gist and return the Gist's
+/// URL.
 pub fn gist(message: &str, title: String) -> Result<String, (u32, String)> {
     let mut content = BTreeMap::new();
     content.insert("content".to_string(), message.to_json());
@@ -193,6 +206,8 @@ pub fn send_gist(token: &str, user: &str, message: &str, priority: i8,
     push(token, user, message, parameters.as_slice())
 }
 
+/// Send a basic push notification with just an API token, user key, and
+/// message body.
 pub fn send_basic(token: &str, user: &str,
                   message: &str) -> Result<(), Vec<String>> {
     return push(token, user, message, vec![].as_slice());
