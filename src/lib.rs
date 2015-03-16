@@ -1,3 +1,6 @@
+//! A library for sending push notifications using the Pushover API.
+//! Repository and command-line client documentation is
+//! [here](https://github.com/unjordy/po).
 #![feature(core)]
 #![feature(collections)]
 
