@@ -15,8 +15,8 @@ name = "po"
 doc = false
 
 [dependencies]
-url = "0.2.23"
-curl = "0.2.2"
-docopt = "0.6.50"
-rustc-serialize = "0.3.3"
-regex = "0.1.19"
+url = "*"
+curl = "*"
+docopt = "*"
+rustc-serialize = "*"
+regex = "*"
