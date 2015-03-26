@@ -1,10 +1,10 @@
-#![feature(core)]
 #![feature(io)]
 #![feature(path_ext)]
 #![feature(exit_status)]
+#![feature(convert)]
 
 extern crate po;
-extern crate "rustc-serialize" as rustc_serialize;
+extern crate rustc_serialize;
 extern crate docopt;
 
 use docopt::Docopt;
@@ -126,7 +126,7 @@ at https://pushover.net to get your user key. Finally, run the command:
 `po --setup <API token> <user key>`");
         }
         else {
-            setup(&config_path, args.arg_token.as_slice(), args.arg_user.as_slice());
+            setup(&config_path, args.arg_token.as_ref(), args.arg_user.as_ref());
         }
         return;
     }
@@ -149,10 +149,10 @@ at https://pushover.net to get your user key. Finally, run the command:
             parameters.push(Parameters::Gist);
         }
 
-        match po::push(token.as_slice(),
-                       user.as_slice(),
-                       message.as_slice(),
-                       parameters.as_slice()) {
+        match po::push(token.as_ref(),
+                       user.as_ref(),
+                       message.as_ref(),
+                       parameters.as_ref()) {
             Ok(()) => {},
             Err(errors) => {
                 println!("po: {:?}", errors);
@@ -172,10 +172,10 @@ at https://pushover.net to get your user key. Finally, run the command:
             parameters.push(Parameters::Gist);
         }
 
-        match po::push(token.as_slice(),
-                       user.as_slice(),
-                       message.as_slice(),
-                       parameters.as_slice()) {
+        match po::push(token.as_ref(),
+                       user.as_ref(),
+                       message.as_ref(),
+                       parameters.as_ref()) {
             Ok(()) => {},
             Err(errors) => {
                 println!("po: {:?}", errors);

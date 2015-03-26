@@ -1,12 +1,12 @@
 //! A library for sending push notifications using the Pushover API.
 //! Repository and command-line client documentation is
 //! [here](https://github.com/unjordy/po).
-#![feature(core)]
 #![feature(collections)]
+#![feature(convert)]
 
 extern crate curl;
 extern crate url;
-extern crate "rustc-serialize" as rustc_serialize;
+extern crate rustc_serialize;
 extern crate regex;
 
 use std::collections::BTreeMap;
@@ -80,8 +80,9 @@ pub fn gist(message: &str, title: String) -> Result<String, (u32, String)> {
 
     if let Ok(json) = json::encode(&gist) {
         let mut handle = http::handle();
+        let json_ref: &str = json.as_ref();
         let upload = handle
-                        .post("https://api.github.com/gists", json.as_slice())
+                        .post("https://api.github.com/gists", json_ref)
                         .header("Content-Type", "application/json")
                         .header("User-Agent", "po");
         if let Ok(res) = upload.exec() {
@@ -101,7 +102,7 @@ pub fn push(token: &str, user: &str, message: &str,
                        parameters: &[Parameters]) -> Result<(), Vec<String>> {
     // Keep these here for now to satisfy the borrow checker:
     let msg = if message.len() > 1024 {
-        message[0..1024].as_slice()
+        message[0..1024].as_ref()
     }
     else {
         message
@@ -141,13 +142,14 @@ pub fn push(token: &str, user: &str, message: &str,
         }
     }
 
-    let body = form_urlencoded::serialize_owned(notification.as_slice());
+    let body = form_urlencoded::serialize_owned(notification.as_ref());
+    let body_ref: &str = body.as_ref();
     if debug {
         println!("push body:\n{}", body);
     }
     let mut handle = http::handle();
     let message = handle
-                    .post("https://api.pushover.net/1/messages.json", body.as_slice())
+                    .post("https://api.pushover.net/1/messages.json", body_ref)
                     .header("Content-Type", "application/x-www-form-urlencoded");
     match message.exec() {
         Ok(res) => {
@@ -182,7 +184,7 @@ pub fn send_with_url(token: &str, user: &str, message: &str, priority: i8,
     if let Some(ut) = url_title {
         parameters.push(Parameters::URLTitle(ut.to_string()));
     }
-    push(token, user, message, parameters.as_slice())
+    push(token, user, message, parameters.as_ref())
 }
 
 pub fn send(token: &str, user: &str, message: &str, priority: i8,
@@ -206,12 +208,12 @@ pub fn send_gist(token: &str, user: &str, message: &str, priority: i8,
         parameters.push(Parameters::Sound(s.to_string()));
     }
     parameters.push(Parameters::Gist);
-    push(token, user, message, parameters.as_slice())
+    push(token, user, message, parameters.as_ref())
 }
 
 /// Send a basic push notification with just an API token, user key, and
 /// message body.
 pub fn send_basic(token: &str, user: &str,
                   message: &str) -> Result<(), Vec<String>> {
-    return push(token, user, message, vec![].as_slice());
+    return push(token, user, message, vec![].as_ref());
 }

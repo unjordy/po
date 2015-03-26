@@ -68,7 +68,7 @@ pub fn write(token: &str, user: &str,
         let file = File::create(path);
         match file {
             Ok(mut f) => {
-                match f.write_all(config_json.into_bytes().as_slice()) {
+                match f.write_all(config_json.into_bytes().as_ref()) {
                     Ok(_) => Ok(()),
                     Err(e) => Err(WriteError::FileError(e))
                 }
