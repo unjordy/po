@@ -44,3 +44,10 @@ libpo also exposes a `po::gist` function which uploads a string to GitHub Gist w
 * Markdown output support for Gists
 * Asynchronous sending for `po` via daemonization
 * More testing
+
+## To be done as Rust features stabilize
+* Use the tee trait to pipe input to output as it's received
+* Re-add proper exit statuses
+* Work on config file read/write error reporting
+* Better error handling for config file/directory creation
+* Actually use semantic versions for dependencies as they leave 0.*.*

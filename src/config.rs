@@ -1,5 +1,4 @@
 use std::io::prelude::*;
-use std::io;
 use std::path;
 use std::fs::File;
 use rustc_serialize::json;
@@ -15,7 +14,7 @@ struct Config {
 pub enum ReadError {
     NoConfig,
     JsonError,
-    FileError(io::Error),
+    FileError,
     InvalidApiToken(String),
     InvalidUserKey(String)
 }
@@ -24,7 +23,7 @@ pub enum ReadError {
 pub enum WriteError {
     InvalidApiToken(String),
     InvalidUserKey(String),
-    FileError(io::Error)
+    FileError
 }
 
 fn valid_token(token: &str) -> bool {
@@ -43,7 +42,7 @@ pub fn read(path: &path::Path) -> Result<(String, String), ReadError> {
                     let config: Config = json::decode(&buf).unwrap();
                     Ok((config.token, config.user))
                 },
-                Err(e) => Err(ReadError::FileError(e))
+                Err(_) => Err(ReadError::FileError)
             }
         },
         Err(_) => Err(ReadError::NoConfig)
@@ -70,10 +69,10 @@ pub fn write(token: &str, user: &str,
             Ok(mut f) => {
                 match f.write_all(config_json.into_bytes().as_ref()) {
                     Ok(_) => Ok(()),
-                    Err(e) => Err(WriteError::FileError(e))
+                    Err(_) => Err(WriteError::FileError)
                 }
             },
-            Err(e) => Err(WriteError::FileError(e))
+            Err(_) => Err(WriteError::FileError)
         }
     }
 }

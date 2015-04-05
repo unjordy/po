@@ -1,8 +1,6 @@
 //! A library for sending push notifications using the Pushover API.
 //! Repository and command-line client documentation is
 //! [here](https://github.com/unjordy/po).
-#![feature(collections)]
-#![feature(convert)]
 
 extern crate curl;
 extern crate url;
@@ -117,8 +115,10 @@ pub fn push(token: &str, user: &str, message: &str,
 
     // Copy the parameters collection into a vector we own; slightly inefficent
     // but much more convenient for the caller.
-    let mut para = Vec::new();
-    para.push_all(parameters);
+    let mut para = Vec::with_capacity(parameters.len());
+    for p in parameters.iter() {
+        para.push(p.clone());
+    }
 
     for parameter in para.into_iter() {
         match parameter {

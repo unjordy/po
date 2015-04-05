@@ -1,8 +1,3 @@
-#![feature(io)]
-#![feature(path_ext)]
-#![feature(exit_status)]
-#![feature(convert)]
-
 extern crate po;
 extern crate rustc_serialize;
 extern crate docopt;
@@ -84,15 +79,18 @@ fn setup(config: &Path, token: &str, user: &str) {
         Ok(()) => {},
         Err(po::config::WriteError::InvalidApiToken(s)) => {
             println!("Invalid API token {}", s);
-            std::env::set_exit_status(2)
+            // TODO: setting exit status isn't stable yet
+            // std::env::set_exit_status(2)
         },
         Err(po::config::WriteError::InvalidUserKey(s)) => {
             println!("Invalid user key {}", s);
-            std::env::set_exit_status(2)
+            // TODO: setting exit status isn't stable yet
+            // std::env::set_exit_status(2)
         },
-        Err(po::config::WriteError::FileError(e)) => {
-            println!("Config write error: {}", e.to_string());
-            std::env::set_exit_status(1)
+        Err(po::config::WriteError::FileError) => {
+            println!("Config write error");
+            // TODO: setting exit status isn't stable yet
+            // std::env::set_exit_status(1)
         }
     }
 }
@@ -103,13 +101,9 @@ fn main() {
                         .unwrap_or_else(|e| e.exit());
     let mut config_path = std::env::home_dir().unwrap();
     config_path.push(".config");
-    if !config_path.exists() {
-        std::fs::create_dir(&config_path).unwrap();
-    }
+    std::fs::create_dir(&config_path).unwrap_or_else(|e| ());
     config_path.push("po");
-    if !config_path.exists() {
-        std::fs::create_dir(&config_path).unwrap();
-    }
+    std::fs::create_dir(&config_path).unwrap_or_else(|e| ());
     config_path.push("tokens");
     config_path.set_extension("json");
 
@@ -135,11 +129,13 @@ at https://pushover.net to get your user key. Finally, run the command:
 
     if config == Err(po::config::ReadError::NoConfig) {
         println!("po: Please run po --setup to configure your Pushover API token & user key.");
-        std::env::set_exit_status(2);
+        // TODO: setting exit status isn't stable yet
+        // std::env::set_exit_status(2);
     }
     else if let Err(e) = config {
         println!("po: Config read error: {:?}", e);
-        std::env::set_exit_status(1);
+        // TODO: setting exit status isn't stable yet
+        // std::env::set_exit_status(1);
     }
     else if let Some(message) = args.arg_message.clone() {
         let (token, user) = config.unwrap();
@@ -156,16 +152,18 @@ at https://pushover.net to get your user key. Finally, run the command:
             Ok(()) => {},
             Err(errors) => {
                 println!("po: {:?}", errors);
-                std::env::set_exit_status(1);
+                // TODO: setting exit status isn't stable yet
+                // std::env::set_exit_status(1);
             }
         }
     }
     else {
         let (token, user) = config.unwrap();
-        let mut input = std::io::stdin().tee(std::io::stdout());
+        let mut input = std::io::stdin();
         let mut message = String::new();
 
         input.read_to_string(&mut message).unwrap();
+        print!("{}", message); // TODO: use tee instead when that stabilizes
         let arg_gist = args.flag_gist;
         let mut parameters = parse_parameters(args);
         if arg_gist && message.len() > 1024 {
@@ -179,7 +177,8 @@ at https://pushover.net to get your user key. Finally, run the command:
             Ok(()) => {},
             Err(errors) => {
                 println!("po: {:?}", errors);
-                std::env::set_exit_status(1);
+                // TODO: setting exit status isn't stable yet
+                // std::env::set_exit_status(1);
             }
         }
     }
