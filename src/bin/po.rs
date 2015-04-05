@@ -101,9 +101,9 @@ fn main() {
                         .unwrap_or_else(|e| e.exit());
     let mut config_path = std::env::home_dir().unwrap();
     config_path.push(".config");
-    std::fs::create_dir(&config_path).unwrap_or_else(|e| ());
+    std::fs::create_dir(&config_path).unwrap_or_else(|_| ());
     config_path.push("po");
-    std::fs::create_dir(&config_path).unwrap_or_else(|e| ());
+    std::fs::create_dir(&config_path).unwrap_or_else(|_| ());
     config_path.push("tokens");
     config_path.set_extension("json");
 
