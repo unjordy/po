@@ -142,7 +142,7 @@ pub fn push(token: &str, user: &str, message: &str,
         }
     }
 
-    let body = form_urlencoded::serialize_owned(notification.as_ref());
+    let body = form_urlencoded::serialize(notification.into_iter());
     let body_ref: &str = body.as_ref();
     if debug {
         println!("push body:\n{}", body);
